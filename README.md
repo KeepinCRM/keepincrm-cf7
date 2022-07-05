@@ -4,7 +4,7 @@
 
 ## Встановлення
 1. Вивантажити плагін архівом
-2. Завантажити та розпаковати архів в системну папку плагінів Wordpress
+2. [Завантажити](https://github.com/KeepinCRM/keepincrm-cf7/archive/refs/heads/master.zip) та розпаковати архів в системну папку плагінів Wordpress
 3. Знайти та увімкнути плагін в адміністративній частині Wordpress
 4. Скопіювати Webhook URL з [KeepinCRM](https://bit.ly/3KCbyDR)
 5. Перейти в налаштування конкретної форми й у вкладці KeepinCRM додати Webhook URL
