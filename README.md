@@ -1,4 +1,4 @@
-# Contact Form7 - [KeepinCRM](https://bit.ly/3KCbyDR) connector
+# Contact Form7 - KeepinCRM connector
 
 Плагін для відправки даних з форм на Contact Form7 до [KeepinCRM](https://bit.ly/3KCbyDR) через Webhook.
 
