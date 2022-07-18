@@ -9,4 +9,4 @@
 4. Скопіювати Webhook URL з [KeepinCRM](https://bit.ly/3KCbyDR)
 5. Перейти в налаштування конкретної форми й у вкладці KeepinCRM додати Webhook URL
 6. Увімкнути відправку даних в KeepinCRM та зробити тестове замовлення
-7. Налаштувати потрібні поля в інтеграції webhook
+7. [Налаштувати потрібні поля](https://keepincrm.com/wordpress-contact-form-7) в інтеграції webhook
