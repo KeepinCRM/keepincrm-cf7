@@ -5,11 +5,11 @@
  * Description: This plugin connects ContactForm7 with KeepinCRM via Webhook
  * Author: KeepinCRM
  * Author URI: https://keepincrm.com
- * Version: 1.1.7
+ * Version: 1.2.0
  */
 
-add_action('wpcf7_mail_sent', 'keepincrm_mail_sent_function');
-function keepincrm_mail_sent_function($contact_form)
+add_action('wpcf7_before_send_mail', 'keepincrm_before_send_mail');
+function keepincrm_before_send_mail($contact_form)
 {
     $properties = $contact_form->prop('ctz_keepincrm');
 
@@ -17,21 +17,20 @@ function keepincrm_mail_sent_function($contact_form)
         return false;
     }
 
-    $title = $contact_form->title;
-
     $submission = WPCF7_Submission::get_instance();
     $posted_data = $submission->get_posted_data();
 
     $webhook_url = $properties['webhook_url'];
 
-    $args = array(
-        'method'      => 'POST',
-        'body'        => json_encode($posted_data),
-        'headers'     => array(
-            'Content-Type'  => 'application/json',
-        ),
-    );
-    $result = wp_remote_post($webhook_url, apply_filters('ctz_post_request_args', $args));
+    $curl = curl_init();
+    curl_setopt($curl, CURLOPT_URL, $webhook_url);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_POST, 1);
+    curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($posted_data));
+    curl_exec($curl);
+    curl_close($curl);
 }
 
 add_filter('wpcf7_editor_panels', 'editor_panels');
