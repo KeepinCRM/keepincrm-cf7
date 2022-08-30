@@ -24,6 +24,7 @@ function keepincrm_before_send_mail($contact_form)
 
     $curl = curl_init();
     curl_setopt($curl, CURLOPT_URL, $webhook_url);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: application/json'));
     curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
     curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
