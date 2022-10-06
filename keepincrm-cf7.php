@@ -5,8 +5,16 @@
  * Description: This plugin connects ContactForm7 with KeepinCRM via Webhook
  * Author: KeepinCRM
  * Author URI: https://keepincrm.com
- * Version: 1.2.0
+ * Version: 1.3.2
  */
+
+
+add_action('wp_enqueue_scripts', 'keepincrm_enqueue_script');
+function keepincrm_enqueue_script()
+{
+    wp_enqueue_script('js.cookie', plugins_url('/js/js.cookie.js', __FILE__), array('jquery'));
+    wp_enqueue_script('handle-utm', plugins_url('/js/handle-utm.js', __FILE__), array('jquery', 'js.cookie'));
+}
 
 add_action('wpcf7_before_send_mail', 'keepincrm_before_send_mail');
 function keepincrm_before_send_mail($contact_form)
@@ -18,7 +26,15 @@ function keepincrm_before_send_mail($contact_form)
     }
 
     $submission = WPCF7_Submission::get_instance();
-    $posted_data = $submission->get_posted_data();
+    $data = $submission->get_posted_data();
+
+    $data['utm_source'] = empty($_COOKIE['utm_source']) ? '' : $_COOKIE['utm_source'];
+    $data['utm_medium'] = empty($_COOKIE['utm_medium']) ? '' : $_COOKIE['utm_medium'];
+    $data['utm_term'] = empty($_COOKIE['utm_term']) ? '' : $_COOKIE['utm_term'];
+    $data['utm_content'] = empty($_COOKIE['utm_content']) ? '' : $_COOKIE['utm_content'];
+    $data['utm_campaign'] = empty($_COOKIE['utm_campaign']) ? '' : $_COOKIE['utm_campaign'];
+
+    $data['page_referrer'] = empty($_SERVER['HTTP_REFERER']) ? '' : $_SERVER['HTTP_REFERER'];
 
     $webhook_url = $properties['webhook_url'];
 
@@ -29,7 +45,7 @@ function keepincrm_before_send_mail($contact_form)
     curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($curl, CURLOPT_POST, 1);
-    curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($posted_data));
+    curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
     curl_exec($curl);
     curl_close($curl);
 }
@@ -38,8 +54,8 @@ add_filter('wpcf7_editor_panels', 'editor_panels');
 function editor_panels($panels)
 {
     $panels['keepincrm-panel'] = array(
-        'title'       => 'KeepinCRM',
-        'callback'    => 'keepincrm_panel_html',
+        'title' => 'KeepinCRM',
+        'callback' => 'keepincrm_panel_html',
     );
 
     return $panels;
@@ -126,8 +142,8 @@ function keepincrm_contact_form_properties($properties, $instance)
 {
     if (!isset($properties['ctz_keepincrm'])) {
         $properties['ctz_keepincrm'] = array(
-            'activate'            => '0',
-            'webhook_url'         => '',
+            'activate' => '0',
+            'webhook_url' => '',
         );
     }
 
